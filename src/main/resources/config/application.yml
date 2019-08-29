@@ -1,0 +1,74 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /spring_test
+spring:
+  profiles:
+    active: @activatedENV@
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/spring_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      username: root
+      password: root
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: spring_test
+    password: spring_test
+    virtual-host: spring_test
+    listener:
+      type: simple
+      simple:
+        concurrency: 2
+        max-concurrency: 10
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          initial-interval: 5s
+          max-interval: 10s
+          max-attempts: 3
+    template:
+      retry:
+        enabled: true
+        initial-interval: 5s
+        max-interval: 10s
+        max-attempts: 3
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  cache:
+    type: redis
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+      resolve-lazily: true
+  mvc:
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/static/
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    properties:
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      org.quartz.jobStore.useProperties: true
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.isClustered: true
+      org.quartz.jobStore.clusterCheckinInterval: 20000
+      org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+      org.quartz.threadPool.threadCount: 20
+      org.quartz.threadPool.threadPriority: 5
+  liquibase:
+    enabled: true
+    url: ${spring.datasource.druid.url}
+    user: ${spring.datasource.druid.username}
+    password: ${spring.datasource.druid.password}
+    change-log: classpath:db/master.xml
