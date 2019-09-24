@@ -72,3 +72,11 @@ spring:
     user: ${spring.datasource.druid.username}
     password: ${spring.datasource.druid.password}
     change-log: classpath:db/master.xml
+
+external:
+  second-rabbitmq:
+      host: 127.0.0.1
+      port: 5672
+      username: portal_dev
+      password: portal_dev
+      virtual-host: portal_dev
